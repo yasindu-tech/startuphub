@@ -24,11 +24,11 @@ interface Startup {
   };
 }
 
-export default function EditStartupPage({
-  params,
-}: {
+interface EditStartupPageProps {
   params: Promise<{ slug: string }>;
-}) {
+}
+
+export default function EditStartupPage({ params }: EditStartupPageProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [startup, setStartup] = useState<Startup | null>(null);
