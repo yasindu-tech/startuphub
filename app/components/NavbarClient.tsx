@@ -2,9 +2,9 @@
 
 import { signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from './ui/button'
 import { usePathname } from 'next/navigation'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Session } from "next-auth"
 
 export default function NavbarClient({ session }: { session: Session | null }) {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CreateStartupForm from "../../../components/CreateStartupForm";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../components/ui/button";
 import Link from "next/link";
 import { use } from "react";
 

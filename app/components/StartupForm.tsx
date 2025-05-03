@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 
 const StartupForm = () => {
   const { data: session } = useSession();

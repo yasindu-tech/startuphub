@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CreateStartupForm from "@/app/components/CreateStartupForm";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import Link from "next/link";
 
 export default function CreateStartupPage() {
