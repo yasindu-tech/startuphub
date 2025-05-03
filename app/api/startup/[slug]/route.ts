@@ -1,7 +1,7 @@
 import { client } from "@/sanity/lib/client";
-import { NextResponse } from "next/server";
-import getServerSession from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { groq } from 'next-sanity'
 
 const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
   _id,
@@ -21,26 +21,44 @@ const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
 }`;
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const query = groq`*[_type == "startup" && slug.current == $slug][0]{
+      _id,
+      _createdAt,
+      name,
+      "slug": slug.current,
+      "image": image.asset->url,
+      url,
+      content
+    }`
+
+    const startup = await client.fetch(query, { slug: params.slug })
 
     if (!startup) {
       return NextResponse.json(
-        { success: false, error: "Startup not found" },
+        { error: 'Startup not found' },
         { status: 404 }
-      );
+      )
     }
 
-    return NextResponse.json({ success: true, data: startup });
+    return NextResponse.json(startup)
   } catch (error) {
-    console.error("Error fetching startup:", error);
+    console.error('Error fetching startup:', error)
     return NextResponse.json(
-      { success: false, error: "Failed to fetch startup" },
+      { error: 'Failed to fetch startup' },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -49,7 +67,7 @@ export async function PUT(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -116,7 +134,7 @@ export async function DELETE(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     if (!session?.user?.email) {
       return NextResponse.json(
