@@ -10,6 +10,14 @@ declare module "next-auth" {
       accessToken?: string
     }
   }
+
+  interface User {
+    id: string
+    email: string
+    name: string
+    image?: string
+    accessToken?: string
+  }
 }
 
 declare module "next-auth/jwt" {
