@@ -22,7 +22,7 @@ const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
     const session = await auth()
@@ -33,17 +33,7 @@ export async function GET(
       )
     }
 
-    const query = groq`*[_type == "startup" && slug.current == $slug][0]{
-      _id,
-      _createdAt,
-      name,
-      "slug": slug.current,
-      "image": image.asset->url,
-      url,
-      content
-    }`
-
-    const startup = await client.fetch(query, { slug: params.slug })
+    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug })
 
     if (!startup) {
       return NextResponse.json(
@@ -63,8 +53,8 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { slug: string } }
+  request: NextRequest,
+  context: { params: { slug: string } }
 ) {
   try {
     const session = await auth();
@@ -76,7 +66,7 @@ export async function PUT(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
+    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug });
 
     if (!startup) {
       return NextResponse.json(
@@ -130,8 +120,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { slug: string } }
+  request: NextRequest,
+  context: { params: { slug: string } }
 ) {
   try {
     const session = await auth();
@@ -143,7 +133,7 @@ export async function DELETE(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
+    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug });
 
     if (!startup) {
       return NextResponse.json(
