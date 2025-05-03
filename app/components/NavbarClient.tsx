@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { usePathname } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+
 export default function NavbarClient({ session }: { session: any }) {
   const pathname = usePathname()
 
@@ -14,7 +16,7 @@ export default function NavbarClient({ session }: { session: any }) {
 
       {session && session.user ? (
         <>
-         <Link href="/create">
+         <Link href="/startup/create">
             <Button variant={pathname === "/" ? "default" : "outline"}>Create</Button>
           </Link>
 

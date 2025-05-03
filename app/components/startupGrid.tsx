@@ -1,87 +1,123 @@
-import StartupCard from "./startupCard"
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Eye } from "lucide-react";
+import imageUrlBuilder from "@sanity/image-url";
+import { client } from "@/sanity/lib/client";
+
+const { projectId, dataset } = client.config();
+const urlFor = (source: any) =>
+  projectId && dataset
+    ? imageUrlBuilder({ projectId, dataset }).image(source)
+    : null;
+
+interface Startup {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  image: {
+    asset: {
+      _ref: string;
+    };
+  };
+  views: number;
+  slug: {
+    current: string;
+  };
+  publishedAt: string;
+}
 
 export default function StartupGrid() {
-  // Mock data for startup cards
-  const startups = [
-    {
-      id: 1,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "Senior level",
-    },
-    {
-      id: 2,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "Education",
-    },
-    {
-      id: 3,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "EdTech",
-    },
-    {
-      id: 4,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "Senior level",
-    },
-    {
-      id: 5,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "Management",
-    },
-    {
-      id: 6,
-      date: "20 May, 2023",
-      likes: 232,
-      founder: "Steven Smith",
-      name: "EcoTrack",
-      description:
-        "A mobile app that helps users track and reduce their carbon footprint through daily habits and sustainable choices.",
-      image: "/placeholder.svg?height=200&width=300",
-      founderImage: "/placeholder.svg?height=32&width=32",
-      category: "EdTech",
-    },
-  ]
+  const [startups, setStartups] = useState<Startup[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchStartups = async () => {
+      try {
+        const response = await fetch("/api/startups");
+        const data = await response.json();
+
+        if (data.success) {
+          setStartups(data.data);
+        } else {
+          throw new Error(data.error || "Failed to fetch startups");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("Failed to load startups");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStartups();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <div className="h-48 bg-gray-200 rounded-t-lg" />
+            <CardHeader>
+              <div className="h-4 bg-gray-200 rounded w-3/4" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-4 bg-gray-200 rounded w-full mb-2" />
+              <div className="h-4 bg-gray-200 rounded w-2/3" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {startups.map((startup) => (
-        <StartupCard key={startup.id} startup={startup} />
+        <Link href={`/startup/${startup.slug.current}`} key={startup._id}>
+          <Card className="h-full hover:shadow-lg transition-shadow duration-200">
+            <div className="relative h-48">
+              {startup.image && (
+                <img
+                  src={urlFor(startup.image)?.url()}
+                  alt={startup.title}
+                  className="w-full h-full object-cover rounded-t-lg"
+                />
+              )}
+            </div>
+            <CardHeader>
+              <h3 className="text-xl font-semibold line-clamp-1">{startup.title}</h3>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 line-clamp-2 mb-4">{startup.description}</p>
+              <Badge variant="secondary">{startup.category}</Badge>
+            </CardContent>
+            <CardFooter className="flex justify-between items-center text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <Eye className="h-4 w-4" />
+                <span>{startup.views}</span>
+              </div>
+              <span>
+                {new Date(startup.publishedAt).toLocaleDateString()}
+              </span>
+            </CardFooter>
+          </Card>
+        </Link>
       ))}
     </div>
-  )
+  );
 }
