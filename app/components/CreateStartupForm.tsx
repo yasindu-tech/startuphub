@@ -25,7 +25,7 @@ interface Startup {
       _ref: string;
     };
   };
-  pitch: any[];
+  pitch: Array<{ text: string }>;
 }
 
 interface CreateStartupFormProps {
@@ -48,7 +48,6 @@ const CreateStartupForm = ({
   const [category, setCategory] = useState<Category>(
     (initialData?.category as Category) || "Technology"
   );
-  const [pitch, setPitch] = useState(initialData?.pitch || []);
   const [imageAssetId, setImageAssetId] = useState(
     initialData?.image?.asset?._ref || ""
   );

@@ -10,6 +10,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "next-sanity";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Mail, Phone, Globe } from "lucide-react";
+import Image from "next/image";
 
 interface Startup {
   _id: string;
@@ -21,7 +22,7 @@ interface Startup {
       _ref: string;
     };
   };
-  pitch: any[];
+  pitch: Array<{ text: string }>;
   author: {
     email: string;
   };
@@ -153,10 +154,12 @@ export default function StartupPage({
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {startup.image && (
           <div className="relative h-64 w-full">
-            <img
+            <Image
               src={urlFor(startup.image).url()}
               alt={startup.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              priority
             />
           </div>
         )}

@@ -1,83 +1,59 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import {
-  Bold,
-  Italic,
-  Underline,
-  List,
-  ListOrdered,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  LinkIcon,
-  ImageIcon,
-} from "lucide-react"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function StartupForm() {
-  const handleSubmitForm = (formData: FormData) => {
+const StartupForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
     try {
-      const title = formData.get("title")
-      const description = formData.get("description")
-      const category = formData.get("category")
-      const mediaLink = formData.get("mediaLink")
-      const pitch = formData.get("pitch")
+      if (!session?.user?.email) {
+        throw new Error("You must be logged in to create a startup");
+      }
 
+      // Form submission logic here
     } catch (error) {
-      console.error("Error submitting form:", error)
+      console.error("Error:", error);
+      setError(error instanceof Error ? error.message : "Failed to create startup");
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <form className="space-y-8" action={handleSubmitForm}>
-      <div className="space-y-2">
-        <label className="font-semibold uppercase text-sm">Title</label>
-        <Input name="title" placeholder="Your Startup Name" />
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="bg-red-50 text-red-500 p-4 rounded-lg">{error}</div>
+      )}
 
-      <div className="space-y-2">
-        <label className="font-semibold uppercase text-sm">Description</label>
-        <Textarea name="description" placeholder="Short description of your startup idea" className="min-h-[100px]" />
-      </div>
-
-      <div className="space-y-2">
-        <label className="font-semibold uppercase text-sm">Category</label>
-        <Input name="category" placeholder="Choose a category (e.g., Tech, Health, Education, etc.)" />
-      </div>
-
-      <div className="space-y-2">
-        <label className="font-semibold uppercase text-sm">Image/Video Link</label>
-        <Input name="mediaLink" placeholder="Paste a link to your demo or promotional media" />
-      </div>
-
-      <div className="space-y-2">
-        <label className="font-semibold uppercase text-sm">Pitch</label>
-        <div className="border rounded-md">
-          <div className="flex items-center gap-1 p-2 border-b">
-            {[Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, List, ListOrdered, LinkIcon, ImageIcon].map(
-              (Icon, index) => (
-                <Button key={index} variant="ghost" size="icon" className="h-8 w-8" type="button">
-                  <Icon className="h-4 w-4" />
-                </Button>
-              )
-            )}
-          </div>
-          <div className="p-4 min-h-[200px]">
-            <Textarea
-              name="pitch"
-              placeholder="Briefly describe your idea and what problem it solves"
-              className="min-h-[150px]"
-            />
-          </div>
-        </div>
-      </div>
-
-      <Button type="submit" className="w-full py-6 bg-emerald-600 hover:bg-emerald-700">
-        SUBMIT YOUR PITCH
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full"
+      >
+        {isSubmitting ? "Creating..." : "Create Startup"}
       </Button>
     </form>
-  )
-}
+  );
+};
+
+export default StartupForm;

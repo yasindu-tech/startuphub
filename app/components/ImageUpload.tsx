@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
+import { client } from "@/sanity/lib/client";
+import Image from "next/image";
 
 interface ImageUploadProps {
   onImageUpload: (assetId: string) => void;
@@ -94,11 +96,13 @@ export default function ImageUpload({ onImageUpload, initialImage }: ImageUpload
         </label>
       </div>
       {previewUrl && (
-        <div className="mt-2">
-          <img
+        <div className="relative h-48 w-full">
+          <Image
             src={previewUrl}
-            alt="Preview"
-            className="h-32 w-32 object-cover rounded-lg"
+            alt="Uploaded image"
+            fill
+            className="object-cover rounded-lg"
+            priority
           />
         </div>
       )}

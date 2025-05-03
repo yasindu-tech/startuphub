@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
+import Image from "next/image";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: any) =>
@@ -24,7 +25,12 @@ interface Startup {
       _ref: string;
     };
   };
+  pitch: Array<{ text: string }>;
+  author: {
+    email: string;
+  };
   views: number;
+  createdAt: string;
   slug: {
     current: string;
   };
@@ -92,11 +98,15 @@ export default function StartupGrid() {
           <Card className="h-full hover:shadow-lg transition-shadow duration-200">
             <div className="relative h-48">
               {startup.image && (
-                <img
-                  src={urlFor(startup.image)?.url()}
-                  alt={startup.title}
-                  className="w-full h-full object-cover rounded-t-lg"
-                />
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={urlFor(startup.image)?.url() || ''}
+                    alt={startup.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
               )}
             </div>
             <CardHeader>
