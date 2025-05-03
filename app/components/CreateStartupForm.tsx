@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ImageUpload from "./ImageUpload";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
 import {
   Select,
   SelectContent,
@@ -114,7 +114,7 @@ const CreateStartupForm = ({
         <Input
           id="title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
           placeholder="Enter your startup title"
           required
         />
@@ -130,7 +130,7 @@ const CreateStartupForm = ({
         <Textarea
           id="description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
           placeholder="Describe your startup"
           required
         />
