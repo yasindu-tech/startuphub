@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000', 'startuphub.vercel.app'],
+      allowedOrigins: ['localhost:3000', 'startuphublk.netlify.app'],
     },
   },
   webpack: (config) => {
