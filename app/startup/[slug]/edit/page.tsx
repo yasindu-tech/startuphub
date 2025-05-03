@@ -18,7 +18,7 @@ interface Startup {
       _ref: string;
     };
   };
-  pitch: any[];
+  pitch: Array<{ text: string }>;
   author: {
     email: string;
   };
