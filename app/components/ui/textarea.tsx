@@ -4,11 +4,12 @@ import { cn } from "@/lib/utils"
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  // Add any custom props here if needed
+  // Custom props can be added here
+  wrapperClassName?: string;
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, wrapperClassName, ...props }, ref) => {
     return (
       <textarea
         className={cn(

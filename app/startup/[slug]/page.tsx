@@ -7,9 +7,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { use } from "react";
 import { urlFor } from "@/sanity/lib/image";
-import { PortableText } from "next-sanity";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Mail, Phone, Globe } from "lucide-react";
 import Image from "next/image";
 
 interface Startup {
