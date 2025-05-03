@@ -1,11 +1,11 @@
-import { AvatarFallback } from "../components/ui/avatar"
-import { AvatarImage } from "../components/ui/avatar"
-import { Avatar } from "../components/ui/avatar"
-import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
+import { AvatarFallback } from "@/app/components/ui/avatar"
+import { AvatarImage } from "@/app/components/ui/avatar"
+import { Avatar } from "@/app/components/ui/avatar"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
 import { Search } from "lucide-react"
-import StartupGrid from "../components/startupGrid"
-import UserAvatars from "../components/userAvatars"
+import StartupGrid from "@/app/components/startupGrid"
+import UserAvatars from "@/app/components/userAvatars"
 
 export default function Home() {
   return (
