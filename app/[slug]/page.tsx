@@ -4,6 +4,7 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]`;
 
@@ -34,13 +35,15 @@ export default async function StartupPage({
         ← Back to startups
       </Link>
       {startupImageUrl && (
-        <img
-          src={startupImageUrl.url()}
-          alt={startup.title}
-          className="aspect-video rounded-xl"
-          width="550"
-          height="310"
-        />
+        <div className="relative aspect-video w-full">
+          <Image
+            src={startupImageUrl.url()}
+            alt={startup.title}
+            fill
+            className="rounded-xl object-cover"
+            priority
+          />
+        </div>
       )}
       <h1 className="text-4xl font-bold mb-8">{startup.title}</h1>
       <div className="prose">

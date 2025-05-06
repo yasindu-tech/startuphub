@@ -1,12 +1,16 @@
 import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
 
-export async function POST(
-  request: Request,
-  { params }: { params: { slug: string } }
-) {
+// Helper to extract slug from the request URL
+const getSlugFromRequest = (request: Request) => {
+  const url = new URL(request.url);
+  const segments = url.pathname.split("/");
+  return segments[segments.length - 2]; // -2 because the last segment is 'views'
+};
+
+export async function POST(request: Request) {
   try {
-    const { slug } = params;
+    const slug = getSlugFromRequest(request);
 
     // Get the current startup
     const startup = await client.fetch(

@@ -43,13 +43,11 @@ export default function StartupPage({
     const fetchStartup = async () => {
       try {
         const response = await fetch(`/api/startup/${slug}`);
-        const data = await response.json();
-
-        if (data.success) {
-          setStartup(data.data);
-        } else {
-          throw new Error(data.error || "Failed to fetch startup");
+        if (!response.ok) {
+          throw new Error('Failed to fetch startup');
         }
+        const data = await response.json();
+        setStartup(data);
       } catch (error) {
         console.error("Error:", error);
         setError("Failed to load startup");
