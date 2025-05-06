@@ -22,7 +22,7 @@ const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
 
 export async function GET(
   request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const session = await auth()
@@ -33,7 +33,7 @@ export async function GET(
       )
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug })
+    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug })
 
     if (!startup) {
       return NextResponse.json(
