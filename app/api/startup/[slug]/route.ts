@@ -19,47 +19,40 @@ const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
   }
 }`;
 
-// Updated type signature for GET
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+// Helper to extract slug from the request URL
+const getSlugFromRequest = (request: NextRequest) => {
+  const url = new URL(request.url);
+  const segments = url.pathname.split("/");
+  return segments[segments.length - 1];
+};
+
+export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await auth();
     if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug })
+    const slug = getSlugFromRequest(request);
+    const startup = await client.fetch(STARTUP_QUERY, { slug });
 
     if (!startup) {
-      return NextResponse.json(
-        { error: 'Startup not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Startup not found" }, { status: 404 });
     }
 
-    return NextResponse.json(startup)
+    return NextResponse.json(startup);
   } catch (error) {
-    console.error('Error fetching startup:', error)
+    console.error("Error fetching startup:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch startup' },
+      { error: "Failed to fetch startup" },
       { status: 500 }
-    )
+    );
   }
 }
 
-// Updated type signature for PUT
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
     const session = await auth();
-
     if (!session?.user?.email) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -67,7 +60,8 @@ export async function PUT(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
+    const slug = getSlugFromRequest(request);
+    const startup = await client.fetch(STARTUP_QUERY, { slug });
 
     if (!startup) {
       return NextResponse.json(
@@ -120,14 +114,9 @@ export async function PUT(
   }
 }
 
-// Updated type signature for DELETE
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
     const session = await auth();
-
     if (!session?.user?.email) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -135,7 +124,8 @@ export async function DELETE(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
+    const slug = getSlugFromRequest(request);
+    const startup = await client.fetch(STARTUP_QUERY, { slug });
 
     if (!startup) {
       return NextResponse.json(
