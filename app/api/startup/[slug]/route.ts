@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-
 const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
   _id,
   title,
@@ -20,6 +19,7 @@ const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
   }
 }`;
 
+// Updated type signature for GET
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
@@ -52,9 +52,10 @@ export async function GET(
   }
 }
 
+// Updated type signature for PUT
 export async function PUT(
   request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const session = await auth();
@@ -66,7 +67,7 @@ export async function PUT(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug });
+    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
 
     if (!startup) {
       return NextResponse.json(
@@ -119,9 +120,10 @@ export async function PUT(
   }
 }
 
+// Updated type signature for DELETE
 export async function DELETE(
   request: NextRequest,
-  context: { params: { slug: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const session = await auth();
@@ -133,7 +135,7 @@ export async function DELETE(
       );
     }
 
-    const startup = await client.fetch(STARTUP_QUERY, { slug: context.params.slug });
+    const startup = await client.fetch(STARTUP_QUERY, { slug: params.slug });
 
     if (!startup) {
       return NextResponse.json(
@@ -159,4 +161,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}
