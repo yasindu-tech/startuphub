@@ -1,7 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { groq } from 'next-sanity'
+
 
 const STARTUP_QUERY = `*[_type == "startup" && slug.current == $slug][0]{
   _id,
