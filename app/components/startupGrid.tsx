@@ -8,12 +8,18 @@ import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
 
+interface SanityImageSource {
+  asset: {
+    _ref: string;
+  };
+}
+
 interface Startup {
   _id: string;
   title: string;
   description: string;
   category: string;
-  image: any;
+  image: SanityImageSource;
   views: number;
   slug: { current: string };
   publishedAt: string;
@@ -26,11 +32,7 @@ interface StartupGridProps {
 
 const { projectId, dataset } = client.config();
 
-interface SanityImageSource {
-  asset: {
-    _ref: string;
-  };
-}
+
 
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset

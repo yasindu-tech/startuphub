@@ -1,7 +1,5 @@
 "use client";
-import { AvatarFallback } from "@/app/components/ui/avatar"
-import { AvatarImage } from "@/app/components/ui/avatar"
-import { Avatar } from "@/app/components/ui/avatar"
+
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Search, ArrowUpDown } from "lucide-react"
