@@ -12,7 +12,11 @@ export async function GET() {
         image,
         views,
         slug,
-        publishedAt
+        publishedAt,
+        author-> {
+          _id,
+          name,
+          email}
       }
     `);
 
@@ -25,3 +29,4 @@ export async function GET() {
     );
   }
 } 
+

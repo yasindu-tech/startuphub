@@ -1,6 +1,5 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -8,6 +7,22 @@ import { Eye } from "lucide-react";
 import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
+
+interface Startup {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  image: any;
+  views: number;
+  slug: { current: string };
+  publishedAt: string;
+}
+
+interface StartupGridProps {
+  startups: Startup[];
+  loading: boolean;
+}
 
 const { projectId, dataset } = client.config();
 
@@ -22,55 +37,7 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
-interface Startup {
-  _id: string;
-  title: string;
-  description: string;
-  category: string;
-  image: {
-    asset: {
-      _ref: string;
-    };
-  };
-  pitch: Array<{ text: string }>;
-  author: {
-    email: string;
-  };
-  views: number;
-  createdAt: string;
-  slug: {
-    current: string;
-  };
-  publishedAt: string;
-}
-
-export default function StartupGrid() {
-  const [startups, setStartups] = useState<Startup[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchStartups = async () => {
-      try {
-        const response = await fetch("/api/startups");
-        const data = await response.json();
-
-        if (data.success) {
-          setStartups(data.data);
-        } else {
-          throw new Error(data.error || "Failed to fetch startups");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("Failed to load startups");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStartups();
-  }, []);
-
+const StartupGrid: React.FC<StartupGridProps> = ({ startups = [], loading = false }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -90,10 +57,10 @@ export default function StartupGrid() {
     );
   }
 
-  if (error) {
+  if (startups.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">{error}</p>
+      <div className="text-center py-12">
+        <p className="text-gray-500">No startups found</p>
       </div>
     );
   }
@@ -107,7 +74,7 @@ export default function StartupGrid() {
               {startup.image && (
                 <div className="relative h-48 w-full">
                   <Image
-                    src={urlFor(startup.image)?.url() || ''}
+                    src={urlFor(startup.image)?.url() || ""}
                     alt={startup.title}
                     fill
                     className="object-cover"
@@ -117,10 +84,14 @@ export default function StartupGrid() {
               )}
             </div>
             <CardHeader>
-              <h3 className="text-xl font-semibold line-clamp-1">{startup.title}</h3>
+              <h3 className="text-xl font-semibold line-clamp-1">
+                {startup.title}
+              </h3>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 line-clamp-2 mb-4">{startup.description}</p>
+              <p className="text-gray-600 line-clamp-2 mb-4">
+                {startup.description}
+              </p>
               <Badge variant="secondary">{startup.category}</Badge>
             </CardContent>
             <CardFooter className="flex justify-between items-center text-sm text-gray-500">
@@ -137,4 +108,6 @@ export default function StartupGrid() {
       ))}
     </div>
   );
-}
+};
+
+export default StartupGrid;

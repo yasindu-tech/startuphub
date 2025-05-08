@@ -1,10 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
-import StartupGrid from "../components/startupGrid"
+import UserStartups from "../components/UserStartups"
 import { auth } from "@/auth"
 
 export default async function ProfilePage() {
-
+  
     const session = await auth()
+    
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-[300px_1fr] gap-8">
@@ -27,7 +28,8 @@ export default async function ProfilePage() {
         </div>
 
         <div>
-          <StartupGrid />
+     
+          <UserStartups userEmail={session?.user?.email} />
         </div>
       </div>
     </div>
